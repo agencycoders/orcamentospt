@@ -1,12 +1,14 @@
-import React from 'react';
-import { Trash2, Plus, AlertTriangle } from 'lucide-react';
+import React, { useState } from 'react';
+import { Trash2, Plus, Calculator, AlertTriangle } from 'lucide-react';
 import { 
   BudgetItem,
   calculateItemTotals,
   validateBudgetItem,
-  formatCurrency,
-  parseLocalizedNumber
+  getMarginColor,
+  getMarginBackgroundColor,
+  suggestSellingPrice
 } from '../../utils/budgetCalculations';
+import { formatCurrency, formatPercentage, parseLocalizedNumber } from '../../utils/formatters';
 
 interface BudgetItemFormProps {
   items: BudgetItem[];
@@ -29,6 +31,7 @@ const BudgetItemForm: React.FC<BudgetItemFormProps> = ({ items, onChange }) => {
   const updateItem = (index: number, updates: Partial<BudgetItem>) => {
     const updatedItems = items.map((item, i) => {
       if (i === index) {
+        // If the update includes cost_price or selling_price, parse them as localized numbers
         const parsedUpdates = {
           ...updates,
           cost_price: updates.cost_price !== undefined 
@@ -47,6 +50,12 @@ const BudgetItemForm: React.FC<BudgetItemFormProps> = ({ items, onChange }) => {
 
   const removeItem = (index: number) => {
     onChange(items.filter((_, i) => i !== index));
+  };
+
+  const autoCalculatePrice = (index: number) => {
+    const item = items[index];
+    const suggestedPrice = suggestSellingPrice(item.cost_price, 30); // Default margin
+    updateItem(index, { selling_price: suggestedPrice });
   };
 
   return (
@@ -185,12 +194,27 @@ const BudgetItemForm: React.FC<BudgetItemFormProps> = ({ items, onChange }) => {
                         onChange={(e) => updateItem(index, { selling_price: Number(e.target.value) })}
                         className="block w-full rounded-md border-gray-300 pl-10 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                       />
+                      <button
+                        type="button"
+                        onClick={() => autoCalculatePrice(index)}
+                        className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-500 hover:text-blue-600"
+                        title={`Calcular preço com margem de 30%`}
+                      >
+                        <Calculator className="h-4 w-4" />
+                      </button>
                     </div>
                   </div>
                 </div>
 
                 {/* Totals */}
-                <div className="rounded-lg p-4 space-y-3">
+                <div className={`
+                  rounded-lg 
+                  p-4 
+                  space-y-3
+                  ${getMarginBackgroundColor(item.profit_percentage)}
+                  transition-colors
+                  duration-200
+                `}>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-gray-600">Total de Custo:</span>
                     <span className="font-medium text-gray-900">{formatCurrency(item.total_cost)}</span>
@@ -198,6 +222,18 @@ const BudgetItemForm: React.FC<BudgetItemFormProps> = ({ items, onChange }) => {
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-gray-600">Total de Venda:</span>
                     <span className="font-medium text-gray-900">{formatCurrency(item.total_selling)}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-600">Margem de Lucro:</span>
+                    <span className={`font-medium ${getMarginColor(item.profit_percentage)}`}>
+                      {formatCurrency(item.profit_margin)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-600">Percentual de Lucro:</span>
+                    <span className={`font-medium ${getMarginColor(item.profit_percentage)}`}>
+                      {formatPercentage(item.profit_percentage)}
+                    </span>
                   </div>
                 </div>
 
@@ -230,6 +266,7 @@ const BudgetItemForm: React.FC<BudgetItemFormProps> = ({ items, onChange }) => {
         <Plus className="h-5 w-5" />
         Adicionar Item
       </button>
+
     </div>
   );
 };

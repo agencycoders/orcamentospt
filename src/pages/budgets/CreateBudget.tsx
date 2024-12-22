@@ -33,25 +33,23 @@ const CreateBudget = () => {
 
     setLoading(true);
     try {
-      await createBudget({
-        customer_id: customerId,
-        items: items.map(item => ({
-          reference: item.reference,
-          description: item.description,
-          unit: item.unit,
-          quantity: item.quantity,
-          cost_price: item.cost_price,
-          selling_price: item.selling_price,
-          total_cost: item.total_cost,
-          total_selling: item.total_selling,
-          profit_margin: item.profit_margin,
-          profit_percentage: item.profit_percentage
-        })),
-        total_cost: totalCost,
-        total_selling: totalSelling,
-        profit_margin: totalSelling - totalCost,
-        profit_percentage: totalCost > 0 ? ((totalSelling - totalCost) / totalCost * 100) : 0
-      });
+      await createBudget(customerId, items.map((item, index) => ({
+        reference: item.reference,
+        description: item.description,
+        unit: item.unit,
+        quantity: item.quantity,
+        cost_price: item.cost_price,
+        selling_price: item.selling_price,
+        total_cost: item.total_cost,
+        total_selling: item.total_selling,
+        budget_id: '', // Placeholder, will be set when creating the budget
+        sequence: index + 1, // Assuming sequence is based on the index
+        detailed_description: '', // Placeholder for detailed description
+        technical_details: '', // Placeholder for technical details
+        delivery_time: '', // Placeholder for delivery time
+        discount_percentage: 0, // Placeholder for discount percentage
+        profit_percentage: 0, // Placeholder for profit percentage
+      })));
       toast.success('Orçamento criado com sucesso!');
       navigate('/budgets');
     } catch (error) {
