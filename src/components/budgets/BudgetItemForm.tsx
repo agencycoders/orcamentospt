@@ -3,13 +3,12 @@ import { Trash2, Plus, Calculator, AlertTriangle } from 'lucide-react';
 import { 
   BudgetItem,
   calculateItemTotals,
-  formatCurrency,
-  formatPercentage,
-  suggestSellingPrice,
   validateBudgetItem,
   getMarginColor,
-  getMarginBackgroundColor
+  getMarginBackgroundColor,
+  suggestSellingPrice
 } from '../../utils/budgetCalculations';
+import { formatCurrency, formatPercentage, parseLocalizedNumber } from '../../utils/formatters';
 
 interface BudgetItemFormProps {
   items: BudgetItem[];
@@ -34,8 +33,17 @@ const BudgetItemForm: React.FC<BudgetItemFormProps> = ({ items, onChange }) => {
   const updateItem = (index: number, updates: Partial<BudgetItem>) => {
     const updatedItems = items.map((item, i) => {
       if (i === index) {
-        const updatedItem = calculateItemTotals({ ...item, ...updates });
-        return updatedItem;
+        // If the update includes cost_price or selling_price, parse them as localized numbers
+        const parsedUpdates = {
+          ...updates,
+          cost_price: updates.cost_price !== undefined 
+            ? parseLocalizedNumber(updates.cost_price.toString())
+            : item.cost_price,
+          selling_price: updates.selling_price !== undefined
+            ? parseLocalizedNumber(updates.selling_price.toString())
+            : item.selling_price
+        };
+        return calculateItemTotals({ ...item, ...parsedUpdates });
       }
       return item;
     });
@@ -159,7 +167,7 @@ const BudgetItemForm: React.FC<BudgetItemFormProps> = ({ items, onChange }) => {
                     </label>
                     <div className="mt-1 relative rounded-md shadow-sm">
                       <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                        <span className="text-gray-500 sm:text-sm">R$</span>
+                        <span className="text-gray-500 sm:text-sm">€</span>
                       </div>
                       <input
                         type="number"
@@ -178,7 +186,7 @@ const BudgetItemForm: React.FC<BudgetItemFormProps> = ({ items, onChange }) => {
                     </label>
                     <div className="mt-1 relative rounded-md shadow-sm">
                       <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                        <span className="text-gray-500 sm:text-sm">R$</span>
+                        <span className="text-gray-500 sm:text-sm">€</span>
                       </div>
                       <input
                         type="number"

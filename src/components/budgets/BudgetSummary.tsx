@@ -1,12 +1,11 @@
 import React from 'react';
 import { DollarSign, TrendingUp, Percent, AlertTriangle, Package, Calculator } from 'lucide-react';
 import { 
-  formatCurrency, 
-  formatPercentage,
   getMarginColor,
   getMarginProgressColor,
   getMarginBackgroundColor
 } from '../../utils/budgetCalculations';
+import { formatCurrency, formatPercentage } from '../../utils/formatters';
 
 interface BudgetSummaryProps {
   totalCost: number;

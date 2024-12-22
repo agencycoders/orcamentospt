@@ -1,3 +1,5 @@
+import { formatCurrency, formatPercentage } from './formatters';
+
 export interface BudgetItem {
   reference: string;
   description: string;
@@ -46,24 +48,12 @@ export const calculateBudgetTotals = (items: BudgetItem[]) => {
     totalSelling,
     profitMargin,
     profitPercentage,
-    itemCount: items.length
+    itemCount: items.length,
+    formattedTotalCost: formatCurrency(totalCost),
+    formattedTotalSelling: formatCurrency(totalSelling),
+    formattedProfitMargin: formatCurrency(profitMargin),
+    formattedProfitPercentage: formatPercentage(profitPercentage)
   };
-};
-
-export const formatCurrency = (value: number) => {
-  return value.toLocaleString('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-};
-
-export const formatPercentage = (value: number) => {
-  return value.toLocaleString('pt-BR', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }) + '%';
 };
 
 export const suggestSellingPrice = (costPrice: number, targetMargin: number = 30) => {
