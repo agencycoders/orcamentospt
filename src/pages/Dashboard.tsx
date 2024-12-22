@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, DollarSign, FileText, PieChart, Percent, Loader2, AlertCircle } from 'lucide-react';
+import { ArrowUpRight, DollarSign, FileText, PieChart, Percent, Loader2, AlertCircle, Clock, CheckCircle, XCircle } from 'lucide-react';
 import StatCard from '../components/Dashboard/StatCard';
 import StatisticsChart from '../components/Dashboard/StatisticsChart';
 import { useBudgets } from '../hooks/useBudgets';
@@ -53,34 +53,6 @@ const Dashboard = () => {
     return acc;
   }, []);
 
-  if (error?.includes('Erro de configuração')) {
-    return (
-      <div className="p-8">
-        <div className="max-w-2xl mx-auto bg-red-50 border border-red-200 rounded-xl p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <AlertCircle className="h-6 w-6 text-red-600" />
-            <h2 className="text-lg font-semibold text-red-900">Erro de Configuração</h2>
-          </div>
-          <p className="text-red-700 mb-4">
-            O sistema não está configurado corretamente. Por favor, siga os passos abaixo:
-          </p>
-          <ol className="list-decimal list-inside space-y-2 text-red-700">
-            <li>Crie um projeto no Supabase (https://supabase.com)</li>
-            <li>Copie as credenciais do projeto em Project Settings &rarr; API</li>
-            <li>Crie um arquivo .env na raiz do projeto</li>
-            <li>Adicione as seguintes variáveis:
-              <pre className="mt-2 p-3 bg-red-100 rounded-lg text-sm">
-                VITE_SUPABASE_URL=sua-url-do-projeto<br/>
-                VITE_SUPABASE_ANON_KEY=sua-chave-anon
-              </pre>
-            </li>
-            <li>Reinicie o servidor de desenvolvimento</li>
-          </ol>
-        </div>
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <div className="p-8">
@@ -92,112 +64,188 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <Link
-            to="/budgets/new"
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Novo Orçamento
-          </Link>
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm mb-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+              <p className="mt-1 text-sm text-gray-500">
+                Visão geral dos seus orçamentos e métricas principais
+              </p>
+            </div>
+            <Link
+              to="/budgets/new"
+              className="px-6 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all duration-200 flex items-center gap-2 shadow-sm font-medium hover:shadow-md w-full sm:w-auto justify-center"
+            >
+              <FileText className="h-4 w-4" />
+              Novo Orçamento
+            </Link>
+          </div>
         </div>
 
         {loading || statsLoading ? (
           <div className="flex justify-center items-center py-12">
-            <Loader2 className="h-8 w-8 text-blue-600 animate-spin" />
+            <Loader2 className="h-8 w-8 text-indigo-600 animate-spin" />
           </div>
         ) : (
           <>
             {/* Main KPIs */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <StatCard
                 title="Total de Orçamentos"
                 value={stats?.total_budgets.toString() || '0'}
-                icon={<FileText className="h-6 w-6 text-blue-600" />}
-                subtitle="Total acumulado"
-                className="bg-blue-50 border-blue-200"
+                subtitle={`${stats?.pending_count || 0} pendentes`}
+                icon={<FileText />}
+                color="indigo"
               />
               <StatCard
                 title="Valor Total"
-                value={`R$ ${(stats?.total_value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-                icon={<DollarSign className="h-6 w-6 text-green-600" />}
-                subtitle="Em orçamentos"
-                className="bg-green-50 border-green-200"
+                value={new Intl.NumberFormat('pt-BR', {
+                  style: 'currency',
+                  currency: 'EUR'
+                }).format(stats?.total_value || 0)}
+                subtitle={`${stats?.approved_count || 0} aprovados`}
+                icon={<DollarSign />}
+                color="emerald"
               />
               <StatCard
                 title="Margem Média"
                 value={`${(stats?.average_margin || 0).toFixed(1)}%`}
-                icon={<Percent className="h-6 w-6 text-purple-600" />}
-                subtitle="De lucro"
-                className="bg-purple-50 border-purple-200"
+                subtitle="Lucro médio"
+                icon={<Percent />}
+                color="violet"
               />
               <StatCard
-                title="Taxa de Aprovação"
+                title="Taxa de Conversão"
                 value={`${stats ? Math.round((stats.approved_count / stats.total_budgets) * 100) : 0}%`}
-                icon={<ArrowUpRight className="h-6 w-6 text-orange-600" />}
-                subtitle="Dos orçamentos"
-                className="bg-orange-50 border-orange-200"
+                subtitle={`${stats?.rejected_count || 0} recusados`}
+                icon={<ArrowUpRight />}
+                color="orange"
               />
             </div>
 
             {/* Status Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-green-600">Aprovados</h3>
-                  <span className="text-2xl font-bold text-green-600">{stats?.approved_count || 0}</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-emerald-100 rounded-lg">
+                      <CheckCircle className="h-5 w-5 text-emerald-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">Aprovados</h3>
+                      <p className="text-sm text-gray-600">Total de orçamentos aprovados</p>
+                    </div>
+                  </div>
+                  <span className="text-2xl font-bold text-emerald-600">{stats?.approved_count || 0}</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div
-                    className="bg-green-600 h-2.5 rounded-full"
-                    style={{
-                      width: `${stats ? (stats.approved_count / stats.total_budgets) * 100 : 0}%`
-                    }}
-                  ></div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Progresso</span>
+                    <span className="font-medium text-emerald-600">
+                      {stats ? Math.round((stats.approved_count / stats.total_budgets) * 100) : 0}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-100 rounded-full h-2">
+                    <div
+                      className="bg-emerald-500 h-2 rounded-full transition-all duration-500"
+                      style={{
+                        width: `${stats ? (stats.approved_count / stats.total_budgets) * 100 : 0}%`
+                      }}
+                    ></div>
+                  </div>
                 </div>
               </div>
               
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-yellow-600">Pendentes</h3>
-                  <span className="text-2xl font-bold text-yellow-600">{stats?.pending_count || 0}</span>
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-indigo-100 rounded-lg">
+                      <Clock className="h-5 w-5 text-indigo-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">Pendentes</h3>
+                      <p className="text-sm text-gray-600">Aguardando aprovação</p>
+                    </div>
+                  </div>
+                  <span className="text-2xl font-bold text-indigo-600">{stats?.pending_count || 0}</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div
-                    className="bg-yellow-600 h-2.5 rounded-full"
-                    style={{
-                      width: `${stats ? (stats.pending_count / stats.total_budgets) * 100 : 0}%`
-                    }}
-                  ></div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Progresso</span>
+                    <span className="font-medium text-indigo-600">
+                      {stats ? Math.round((stats.pending_count / stats.total_budgets) * 100) : 0}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-100 rounded-full h-2">
+                    <div
+                      className="bg-indigo-500 h-2 rounded-full transition-all duration-500"
+                      style={{
+                        width: `${stats ? (stats.pending_count / stats.total_budgets) * 100 : 0}%`
+                      }}
+                    ></div>
+                  </div>
                 </div>
               </div>
               
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-red-600">Recusados</h3>
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-red-100 rounded-lg">
+                      <XCircle className="h-5 w-5 text-red-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">Recusados</h3>
+                      <p className="text-sm text-gray-600">Orçamentos não aprovados</p>
+                    </div>
+                  </div>
                   <span className="text-2xl font-bold text-red-600">{stats?.rejected_count || 0}</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div
-                    className="bg-red-600 h-2.5 rounded-full"
-                    style={{
-                      width: `${stats ? (stats.rejected_count / stats.total_budgets) * 100 : 0}%`
-                    }}
-                  ></div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Progresso</span>
+                    <span className="font-medium text-red-600">
+                      {stats ? Math.round((stats.rejected_count / stats.total_budgets) * 100) : 0}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-100 rounded-full h-2">
+                    <div
+                      className="bg-red-500 h-2 rounded-full transition-all duration-500"
+                      style={{
+                        width: `${stats ? (stats.rejected_count / stats.total_budgets) * 100 : 0}%`
+                      }}
+                    ></div>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <h3 className="text-lg font-semibold mb-6">Valor dos Orçamentos</h3>
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">Valor dos Orçamentos</h3>
+                    <p className="text-sm text-gray-500 mt-1">Análise mensal dos valores</p>
+                  </div>
+                  <div className="p-2 bg-indigo-50 rounded-lg">
+                    <DollarSign className="h-5 w-5 text-indigo-600" />
+                  </div>
+                </div>
                 <StatisticsChart data={monthlyData} type="value" />
               </div>
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <h3 className="text-lg font-semibold mb-6">Margem de Lucro</h3>
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">Margem de Lucro</h3>
+                    <p className="text-sm text-gray-500 mt-1">Análise mensal das margens</p>
+                  </div>
+                  <div className="p-2 bg-violet-50 rounded-lg">
+                    <PieChart className="h-5 w-5 text-violet-600" />
+                  </div>
+                </div>
                 <StatisticsChart data={monthlyData} type="margin" />
               </div>
             </div>

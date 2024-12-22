@@ -9,23 +9,27 @@ export default {
       fontFamily: {
         sans: ['Inter var', 'system-ui', '-apple-system', 'sans-serif'],
       },
-      colors: {
-        // Custom colors can be added here
-      },
-      spacing: {
-        // Custom spacing can be added here
-      },
-      borderRadius: {
-        // Custom border radius can be added here
-      },
-      boxShadow: {
-        // Custom shadows can be added here
-      },
       animation: {
-        // Custom animations can be added here
+        'fadeIn': 'fadeIn 0.2s ease-in-out forwards',
+        'slideIn': 'slideIn 0.2s ease-in-out forwards',
       },
       keyframes: {
-        // Custom keyframes can be added here
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(-5px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' }
+        },
+        slideIn: {
+          '0%': { transform: 'translateX(-10px)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' }
+        }
+      },
+      transitionProperty: {
+        'width': 'width',
+        'spacing': 'margin, padding',
+      },
+      transitionTimingFunction: {
+        'in-expo': 'cubic-bezier(0.95, 0.05, 0.795, 0.035)',
+        'out-expo': 'cubic-bezier(0.19, 1, 0.22, 1)',
       },
     },
   },

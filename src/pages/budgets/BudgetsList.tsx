@@ -86,7 +86,7 @@ const BudgetsList = () => {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-8 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-bold text-gray-900">Orçamentos</h1>
@@ -111,7 +111,7 @@ const BudgetsList = () => {
                 placeholder="Buscar orçamentos..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-blue-300"
               />
             </div>
             <div className="flex items-center gap-2">
@@ -137,7 +137,7 @@ const BudgetsList = () => {
             <Loader2 className="h-8 w-8 text-blue-600 animate-spin" />
           </div>
         ) : (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-200">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -168,7 +168,7 @@ const BudgetsList = () => {
                     const StatusIcon = statusConfig.icon;
 
                     return (
-                      <tr key={budget.id} className="hover:bg-gray-50">
+                    <tr key={budget.id} className="hover:bg-gray-50 transition-all duration-200">
                         <td className="px-6 py-4">
                           <div className="flex items-center">
                             <div className="h-10 w-10 flex-shrink-0">

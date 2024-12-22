@@ -63,7 +63,7 @@ const CreateBudget = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Novo Orçamento</h1>
@@ -77,7 +77,7 @@ const CreateBudget = () => {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Customer Selection */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-900">
                 Cliente
@@ -88,7 +88,7 @@ const CreateBudget = () => {
             <select
               value={customerId}
               onChange={(e) => setCustomerId(e.target.value)}
-              className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-all duration-200 hover:border-blue-300"
             >
               <option value="">Selecione um cliente</option>
               {customers.map((customer) => (
@@ -132,7 +132,7 @@ const CreateBudget = () => {
           />
 
           {/* Actions */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-6 hover:shadow-md transition-all duration-200">
             <button
               type="submit"
               disabled={loading || items.length === 0 || !customerId}
