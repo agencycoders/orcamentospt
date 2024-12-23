@@ -1,5 +1,7 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import RequireAuth from './components/RequireAuth'; // Import RequireAuth component
 import Dashboard from './pages/Dashboard';
 import ClientsList from './pages/clients/ClientsList';
 import ClientForm from './pages/clients/ClientForm';
@@ -16,7 +18,7 @@ import ForgotPassword from './pages/ForgotPassword'; // Import ForgotPassword co
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout />,
+    element: <AuthProvider><Layout /></AuthProvider>,
     children: [
       {
         path: 'login',
@@ -27,8 +29,21 @@ export const router = createBrowserRouter([
         element: <ForgotPassword />,
       },
       {
+        path: 'dashboard', // New route for Dashboard
+        element: (
+          <RequireAuth>
+            <Dashboard />
+          </RequireAuth>
+        ),
+      },
+      {
         index: true,
-        element: <Dashboard />
+        element: (
+          <RequireAuth>
+            <Dashboard />
+          </RequireAuth>
+        ),
+        errorElement: <div>Custom error message for Dashboard loading failure.</div>
       },
       {
         path: 'clients',
