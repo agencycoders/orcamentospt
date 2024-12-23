@@ -119,7 +119,7 @@ const ClientForm = () => {
                       <p className={`text-sm font-medium ${
                         formData.type === 'individual' ? 'text-blue-600' : 'text-gray-900'
                       }`}>
-                        Pessoa Física
+                        Cliente
                       </p>
                       <p className="text-xs text-gray-500">
                         Para clientes individuais
@@ -147,7 +147,7 @@ const ClientForm = () => {
                       <p className={`text-sm font-medium ${
                         formData.type === 'company' ? 'text-blue-600' : 'text-gray-900'
                       }`}>
-                        Pessoa Jurídica
+                        Empresa
                       </p>
                       <p className="text-xs text-gray-500">
                         Para empresas
@@ -167,9 +167,9 @@ const ClientForm = () => {
           </h3>
           <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
             <div className="sm:col-span-4">
-              <label className="block text-sm font-medium text-gray-700">
-                {formData.type === 'company' ? 'Razão Social' : 'Nome Completo'}
-              </label>
+<label className="block text-sm font-medium text-gray-700">
+  {formData.type === 'company' ? 'Nome da Empresa' : 'Nome'}
+</label>
               <input
                 type="text"
                 name="name"
@@ -196,9 +196,9 @@ const ClientForm = () => {
             )}
 
             <div className="sm:col-span-3">
-              <label className="block text-sm font-medium text-gray-700">
-                {formData.type === 'company' ? 'CNPJ' : 'CPF'}
-              </label>
+<label className="block text-sm font-medium text-gray-700">
+  {formData.type === 'company' ? 'NIF' : 'NIF'}
+</label>
               <input
                 type="text"
                 name="tax_id"
@@ -260,9 +260,9 @@ const ClientForm = () => {
           </h3>
           <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
             <div className="sm:col-span-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Endereço
-              </label>
+<label className="block text-sm font-medium text-gray-700">
+  Morada
+</label>
               <input
                 type="text"
                 name="address"
@@ -273,9 +273,9 @@ const ClientForm = () => {
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">
-                CEP
-              </label>
+<label className="block text-sm font-medium text-gray-700">
+  Código Postal
+</label>
               <input
                 type="text"
                 name="postal_code"
@@ -286,9 +286,9 @@ const ClientForm = () => {
             </div>
 
             <div className="sm:col-span-3">
-              <label className="block text-sm font-medium text-gray-700">
-                Cidade
-              </label>
+<label className="block text-sm font-medium text-gray-700">
+  Cidade
+</label>
               <input
                 type="text"
                 name="city"
@@ -299,9 +299,9 @@ const ClientForm = () => {
             </div>
 
             <div className="sm:col-span-3">
-              <label className="block text-sm font-medium text-gray-700">
-                Estado
-              </label>
+<label className="block text-sm font-medium text-gray-700">
+  Distrito
+</label>
               <input
                 type="text"
                 name="state"
