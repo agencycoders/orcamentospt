@@ -1,21 +1,37 @@
 import React, { useState } from 'react';
 import { FileText, Mail, Lock } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // Import Link
+import { supabase } from '../lib/supabase'; // Import Supabase client
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false); // Loading state
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement authentication
-    navigate('/dashboard');
+    setLoading(true); // Set loading state
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
+
+        if (error) throw error;
+
+        navigate('/dashboard');
+    } catch (error) {
+        const errorMessage = (error as { message: string }).message; // Type assertion
+        alert(errorMessage); // Display error message
+    } finally {
+        setLoading(false); // Reset loading state
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="max-w-md w-full space-y-8 bg-white shadow-md rounded-lg p-8">
         <div className="text-center">
           <div className="flex justify-center">
             <FileText className="h-12 w-12 text-blue-600" />
@@ -87,18 +103,19 @@ const Login = () => {
             </div>
 
             <div className="text-sm">
-              <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+              <Link to="/forgot-password" className="font-medium text-blue-600 hover:text-blue-500">
                 Esqueceu a palavra-passe?
-              </a>
+              </Link>
             </div>
           </div>
 
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              disabled={loading} // Disable button while loading
+              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
             >
-              Entrar
+              {loading ? 'Entrando...' : 'Entrar'} {/* Show loading text */}
             </button>
           </div>
         </form>

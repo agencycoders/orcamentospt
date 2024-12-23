@@ -10,12 +10,22 @@ import BudgetDetails from './pages/budgets/BudgetDetails';
 import SettingsLayout from './pages/settings/SettingsLayout';
 import CompanyProfile from './pages/settings/CompanyProfile';
 import SMTPSettings from './pages/settings/SMTPSettings';
+import Login from './pages/Login'; // Import Login component
+import ForgotPassword from './pages/ForgotPassword'; // Import ForgotPassword component
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
     children: [
+      {
+        path: 'login',
+        element: <Login />, // Add the login route
+      },
+      {
+        path: 'forgot-password', // Add the forgot password route
+        element: <ForgotPassword />,
+      },
       {
         index: true,
         element: <Dashboard />

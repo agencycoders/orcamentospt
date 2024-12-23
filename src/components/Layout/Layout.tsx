@@ -1,26 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 
 const Layout = () => {
-  // Initialize state from localStorage or default to false
+  const location = useLocation(); // Get the current location
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
     const saved = localStorage.getItem('sidebarCollapsed');
     return saved ? JSON.parse(saved) : false;
   });
 
-  // Save to localStorage whenever the state changes
   useEffect(() => {
     localStorage.setItem('sidebarCollapsed', JSON.stringify(isSidebarCollapsed));
   }, [isSidebarCollapsed]);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <Sidebar 
-        isCollapsed={isSidebarCollapsed} 
-        onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
-      />
+      {/* Conditionally render Sidebar based on the current route */}
+      {location.pathname !== '/login' && location.pathname !== '/forgot-password' && (
+        <Sidebar 
+          isCollapsed={isSidebarCollapsed} 
+          onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
+        />
+      )}
 
       {/* Main Content */}
       <main 
@@ -35,7 +36,6 @@ const Layout = () => {
           ml-0
         `}
       >
-        {/* Content wrapper with responsive padding */}
         <div className="
           h-full
           p-4 
@@ -45,7 +45,6 @@ const Layout = () => {
           duration-300
           ease-in-out
         ">
-          {/* Page content */}
           <div className="
             max-w-[2000px] 
             mx-auto 
@@ -57,7 +56,6 @@ const Layout = () => {
           </div>
         </div>
 
-        {/* Background overlay for mobile menu */}
         <div 
           className={`
             fixed 
