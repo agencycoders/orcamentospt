@@ -38,7 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
   const navigation = [
     { 
       name: 'Dashboard', 
-      href: '/', 
+      href: '/Dashboard', 
       icon: LayoutDashboard,
       description: 'Visão geral do sistema'
     },
@@ -146,7 +146,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
           <Link 
             to="/" 
             className="flex items-center gap-3 transition-all duration-300 group"
-            title={isCollapsed ? "Orçamentos" : undefined}
+            title={isCollapsed ? "Lopes Orçamentos" : undefined}
           >
             <Building2 className="h-8 w-8 text-blue-600 flex-shrink-0 transition-transform group-hover:scale-110" />
             <span className={`
@@ -157,7 +157,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
               duration-300
               ${isCollapsed ? 'lg:opacity-0 lg:invisible lg:w-0' : 'opacity-100 visible w-auto'}
             `}>
-              Orçamentos
+              Lopes Orçamentos
             </span>
           </Link>
         </div>
@@ -248,8 +248,48 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
           })}
         </nav>
 
-        {/* Footer removed */}
-        
+        {/* Footer */}
+        <div className={`
+          px-4 
+          mt-6 
+          transition-all 
+          duration-300
+          ${isCollapsed ? 'lg:px-2' : 'lg:px-6'}
+        `}>
+          <div className="
+            rounded-lg 
+            bg-blue-50 
+            p-4 
+            transition-all 
+            duration-300
+            hover:bg-blue-100
+            group
+          ">
+            <div className="flex items-center gap-3">
+              <FileText className="
+                h-6 
+                w-6 
+                text-blue-600 
+                flex-shrink-0
+                transition-transform
+                group-hover:scale-110
+              " />
+              <div className={`
+                transition-all 
+                duration-300
+                ${isCollapsed ? 'lg:opacity-0 lg:invisible lg:w-0' : 'opacity-100 visible w-auto'}
+              `}>
+                <h3 className="text-sm font-medium text-blue-900">
+                  Lopes Orçamentos
+                </h3>
+                <p className="mt-1 text-xs text-blue-700">
+                  v0.1.0
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Enhanced Collapse button */}
         <button
           type="button"

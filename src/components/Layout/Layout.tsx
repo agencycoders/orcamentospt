@@ -1,77 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 
 const Layout = () => {
-  const location = useLocation(); // Get the current location
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
-    const saved = localStorage.getItem('sidebarCollapsed');
-    return saved ? JSON.parse(saved) : false;
-  });
+    const location = useLocation();
+    const [isCollapsed, setIsCollapsed] = useState(false); // Estado para controlar a visibilidade do Sidebar
 
-  useEffect(() => {
-    localStorage.setItem('sidebarCollapsed', JSON.stringify(isSidebarCollapsed));
-  }, [isSidebarCollapsed]);
+    const handleToggleCollapse = () => {
+        setIsCollapsed(!isCollapsed);
+    };
 
-  return (
-    <div className="flex min-h-screen bg-gray-100">
-      {/* Conditionally render Sidebar based on the current route */}
-      {location.pathname !== '/login' && location.pathname !== '/forgot-password' && (
-        <Sidebar 
-          isCollapsed={isSidebarCollapsed} 
-          onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
-        />
-      )}
-
-      {/* Main Content */}
-      <main 
-        className={`
-          flex-1 
-          relative
-          min-h-screen
-          transition-all 
-          duration-300 
-          ease-in-out
-          ${isSidebarCollapsed ? 'lg:ml-[4.5rem]' : 'lg:ml-72'}
-          ml-0
-        `}
-      >
-        <div className="
-          h-full
-          p-4 
-          sm:p-6 
-          lg:p-8 
-          transition-all 
-          duration-300
-          ease-in-out
-        ">
-          <div className="
-            max-w-[2000px] 
-            mx-auto 
-            transition-all 
-            duration-300
-            animate-slideIn
-          ">
-            <Outlet />
-          </div>
+    return (
+        <div className="flex">
+            {/* Renderiza o Sidebar apenas se não estiver na página de Login ou Forgot Password */}
+            {location.pathname !== '/login' && location.pathname !== '/forgot-password' && (
+                <Sidebar isCollapsed={isCollapsed} onToggleCollapse={handleToggleCollapse} />
+            )}
+<main className={`flex-1 p-4 transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-72'}`}>
+                <Outlet /> {/* Renderiza o conteúdo da rota */}
+            </main>
         </div>
-
-        <div 
-          className={`
-            fixed 
-            inset-0 
-            bg-gray-900/20 
-            backdrop-blur-sm 
-            lg:hidden
-            transition-opacity 
-            duration-300
-            ${isSidebarCollapsed ? 'opacity-0 pointer-events-none' : ''}
-          `}
-          onClick={() => setIsSidebarCollapsed(true)}
-        />
-      </main>
-    </div>
-  );
+    );
 };
 
 export default Layout;

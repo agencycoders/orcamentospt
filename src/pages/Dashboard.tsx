@@ -6,15 +6,28 @@ import StatisticsChart from '../components/Dashboard/StatisticsChart';
 import { useBudgets } from '../hooks/useBudgets';
 
 interface BudgetStats {
-  total_budgets: number;
-  total_value: number;
-  average_margin: number;
-  approved_count: number;
-  pending_count: number;
-  rejected_count: number;
+  total_budgets: number | null;
+  total_value: number | null;
+  average_margin: number | null;
+  approved_count: number | null;
+  pending_count: number | null;
+  rejected_count: number | null;
 }
 
+import { supabase } from '../lib/supabase';
+
 const Dashboard = () => {
+    useEffect(() => {
+        const fetchData = async () => {
+            const { data, error } = await supabase.from('budgets').select('*');
+            if (error) {
+                console.error('Erro ao buscar dados do Supabase:', error);
+            } else {
+                console.log('Dados do Supabase:', data);
+            }
+        };
+        fetchData();
+    }, []);
   const { budgets, loading, error, getBudgetStats } = useBudgets();
   const [stats, setStats] = useState<BudgetStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);

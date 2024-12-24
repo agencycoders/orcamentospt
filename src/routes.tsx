@@ -1,7 +1,5 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import RequireAuth from './components/RequireAuth'; // Import RequireAuth component
 import Dashboard from './pages/Dashboard';
 import ClientsList from './pages/clients/ClientsList';
 import ClientForm from './pages/clients/ClientForm';
@@ -12,38 +10,34 @@ import BudgetDetails from './pages/budgets/BudgetDetails';
 import SettingsLayout from './pages/settings/SettingsLayout';
 import CompanyProfile from './pages/settings/CompanyProfile';
 import SMTPSettings from './pages/settings/SMTPSettings';
-import Login from './pages/Login'; // Import Login component
-import ForgotPassword from './pages/ForgotPassword'; // Import ForgotPassword component
+import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+import RequireAuth from './components/RequireAuth'; // Importando o componente de proteção
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <AuthProvider><Layout /></AuthProvider>,
+    element: <Layout />,
     children: [
       {
-        path: 'login',
-        element: <Login />, // Add the login route
-      },
-      {
-        path: 'forgot-password', // Add the forgot password route
-        element: <ForgotPassword />,
-      },
-      {
-        path: 'dashboard', // New route for Dashboard
-        element: (
-          <RequireAuth>
-            <Dashboard />
-          </RequireAuth>
-        ),
-      },
-      {
         index: true,
+        element: <Navigate to="/login" replace /> // Redireciona para o login se não houver um índice
+      },
+      {
+        path: 'login',
+        element: <Login />
+      },
+      {
+        path: 'forgot-password',
+        element: <ForgotPassword />
+      },
+      {
+        path: 'dashboard',
         element: (
           <RequireAuth>
             <Dashboard />
           </RequireAuth>
-        ),
-        errorElement: <div>Custom error message for Dashboard loading failure.</div>
+        ) // Protegendo a rota do Dashboard
       },
       {
         path: 'clients',

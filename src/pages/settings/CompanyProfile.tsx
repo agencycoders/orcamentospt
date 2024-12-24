@@ -117,7 +117,7 @@ const CompanyProfile = () => {
 
               <div className="sm:col-span-3">
                 <label className="block text-sm font-medium text-gray-700">
-                  NIF
+                  CNPJ
                 </label>
                 <input
                   type="text"
@@ -166,7 +166,7 @@ const CompanyProfile = () => {
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700">
-                  Código Postal
+                  CEP
                 </label>
                 <input
                   type="text"
@@ -192,7 +192,7 @@ const CompanyProfile = () => {
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700">
-                  Distrito
+                  Estado
                 </label>
                 <input
                   type="text"
